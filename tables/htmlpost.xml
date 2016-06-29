@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<table xmlns="http://query.yahooapis.com/v1/schema/table.xsd">
+  <meta>
+    <author>Yui Mitsuki</author>
+    <description>POST</description>
+    <sampleQuery>
+      <![CDATA[
+        select * from {table} where url="http://foo.tld" and args="foo=foo&bar=bar" and xpath="//body"
+      ]]>
+    </sampleQuery>
+  </meta>
+  <bindings>
+    <select itemPath="" produces="XML">
+      <urls>
+        <url>{url}</url>
+      </urls>
+      <inputs>
+        <key id="url"   type="xs:string" paramType="variable" required="true" />
+        <key id="args"  type="xs:string" paramType="variable" required="true" />
+        <key id="xpath" type="xs:string" paramType="variable" required="false" />
+      </inputs>
+      <execute>
+        <![CDATA[
+          var data = y.rest(url).accept('text/html').contentType("application/x-www-form-urlencoded").post(args).response;
+          if(xpath) data = y.xpath(data, xpath);
+          response.object = <data>{data}</data>;
+        ]]>
+      </execute>
+    </select>
+  </bindings>
+</table>
